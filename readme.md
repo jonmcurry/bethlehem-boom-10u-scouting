@@ -14,6 +14,24 @@ section), not a single staged swing.
 **Roster:** #1 Maggie M · #2 Ellie T · #3 Clare C · #5 Felicia A · #10 Anya O · #12 Payton M ·
 #16 Lucy L · #23 Harper B · #25 Emily Y · #44 Chloe R · #66 Madison W
 
+## Live site
+
+Reports are hosted on GitHub Pages (public — no video/photos are hosted, only text: names,
+jersey numbers, coach names, and written swing notes):
+
+- **Team summary:** https://jonmcurry.github.io/bethlehem-boom-10u-scouting/reports/team_summary.html
+- **Repo:** https://github.com/jonmcurry/bethlehem-boom-10u-scouting
+
+Share the team summary link with coaches/parents — every player's report is one tap away from
+there. To publish an update after editing a report locally:
+```powershell
+git add -A
+git commit -m "describe what changed"
+git push
+```
+GitHub Pages rebuilds automatically within a minute or two of a push. `videos/` and `frames/`
+are gitignored — real footage never leaves your machine.
+
 ## Folder layout
 
 - `videos/` — drop raw game clips here (`.mp4`/`.mov` from your Pixel), one file per at-bat. Suggested naming: `<player_slug>_<YYYYMMDD>_<opponent>_ab<N>.mp4`, e.g. `videos/maggie_m_20260802_eagles_ab1.mp4` — the date/opponent/AB# should match a row you add to that player's Game Log.
