@@ -47,8 +47,8 @@ are gitignored — real footage never leaves your machine.
 ## Filming at games
 
 - Film **every at-bat**, not just the good or bad ones — a checklist built from a cherry-picked swing will mislead more than help.
-- Slow-mo (240fps on most Pixels) still works fine in games: start recording as the pitcher begins her windup (not when you see the bat start moving) — 10U pitch speed gives plenty of reaction time, and this gets you clean slow-mo without needing to react to the swing itself.
-- Slow-mo needs light. Day games: no problem. Dusk/evening or a dim field: drop to normal 60fps rather than getting dark, blurry slow-mo footage.
+- Slow-mo still works fine in games: start recording as the pitcher begins her windup (not when you see the bat start moving) — 10U pitch speed gives plenty of reaction time, and this gets you clean slow-mo without needing to react to the swing itself.
+- Prefer **1/8 speed** (240fps, if your phone supports it) over 1/4 (120fps) when light allows — it gives double the real-time frame density for the same frame-extraction setting, which matters for catching the exact contact frame. Drop to 1/4, or normal speed, if a game's at dusk/under weak field lights — higher capture fps means a shorter exposure per frame, and a dim 1/8 clip comes out dark and noisy rather than usably slow.
 - Shoot from a consistent spot each game if you can (behind the backstop is usually the best angle to see both stance and swing plane) — if shooting through fence mesh, get the lens close to the mesh to avoid moiré/focus issues.
 - Heads up: filming from behind a public backstop will incidentally catch other teams' players in frame — worth keeping in mind if clips ever get shared beyond your own coaching use.
 

@@ -17,8 +17,13 @@
   don't overwrite each other.
 
 .PARAMETER Fps
-  Frames per second to extract (default 10 - a Pixel phone slow-mo clip is usually 120-240fps,
-  so 10fps still gives ~12-24 real frames per second of game-speed swing).
+  Frames per second to extract, measured against the SLOW-MO FILE'S OWN (stretched) playback
+  timeline, not real time (default 10). A Pixel slow-mo file plays back N times slower than it
+  was captured (N=4 for "1/4 speed" / 120fps capture, N=8 for "1/8 speed" / 240fps capture), so
+  the real-time-equivalent density is Fps x N: at the default of 10, that's ~40 real frames/sec
+  of swing at 1/4 speed, ~80 real frames/sec at 1/8 speed - both already denser than a ~0.3-0.5s
+  swing needs positionally. Raise -Fps for a closer look at a specific window (e.g. contact) if
+  10 isn't resolving something; you don't need it for general position checkpoints.
 
 .EXAMPLE
   ./scripts/extract_frames.ps1 -VideoPath videos/maggie_m_20260802_eagles_ab1.mp4 -PlayerName maggie_m
