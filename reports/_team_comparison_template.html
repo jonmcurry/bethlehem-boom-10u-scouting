@@ -256,14 +256,15 @@
             <th data-key="cp7">Extension <span class="arrow"></span></th>
             <th data-key="cp8">Head/Eyes <span class="arrow"></span></th>
             <th data-key="cp9">Follow-Through <span class="arrow"></span></th>
+            <th data-key="cp10">Swing Dec. <span class="arrow"></span></th>
           </tr>
         </thead>
         <tbody>
-          <tr><td class="player-name">{{Player 1 name}}</td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td></tr>
-          <tr><td class="player-name">{{Player 2 name}}</td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td></tr>
+          <tr><td class="player-name">{{Player 1 name}}</td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td></tr>
+          <tr><td class="player-name">{{Player 2 name}}</td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td><td><span class="pill" data-score="2" title="Developing">2</span></td></tr>
         </tbody>
         <tfoot>
-          <tr class="avg-row"><td>Team avg</td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td></tr>
+          <tr class="avg-row"><td>Team avg</td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td><td><span class="pill avg" data-score="2" title="Developing">2.0</span></td></tr>
         </tfoot>
       </table>
     </div>
@@ -290,7 +291,7 @@
 <script>
   const CHECKPOINTS = [
     "Stance", "Load", "Stride", "Hip-Shoulder Sep.", "Hand Path",
-    "Bat Path", "Contact Pt.", "Extension", "Head/Eyes", "Follow-Through"
+    "Bat Path", "Contact Pt.", "Extension", "Head/Eyes", "Follow-Through", "Swing Dec."
   ];
 
   // Edit this array: one object per player. scores must be in the same order as CHECKPOINTS above.
@@ -303,7 +304,7 @@
       drill: "{{fix focus / drill}}",
       comp: "{{comp cue}}",
       report: null,
-      scores: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      scores: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     },
     {
       name: "{{Player 2 name}}",
@@ -312,7 +313,7 @@
       drill: "{{fix focus / drill}}",
       comp: "{{comp cue}}",
       report: null,
-      scores: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      scores: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     },
     // copy/paste another object per additional player
   ];

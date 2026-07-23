@@ -195,10 +195,10 @@
     <div class="table-scroll">
       <table id="gameLogTable">
         <thead>
-          <tr><th>Date</th><th>Opponent</th><th>AB #</th><th>Result</th><th>Clip</th></tr>
+          <tr><th>Date</th><th>Opponent</th><th>AB #</th><th>Pitch</th><th>Result</th><th>Clip</th></tr>
         </thead>
         <tbody>
-          <tr><td colspan="5" style="color:var(--text-muted);">No at-bats logged yet.</td></tr>
+          <tr><td colspan="6" style="color:var(--text-muted);">No at-bats logged yet.</td></tr>
         </tbody>
       </table>
     </div>
@@ -264,62 +264,83 @@
         <div class="bar-track"><div class="bar-fill" data-score="pending" style="width:0%"></div></div>
         <div class="bar-value">–/3</div>
       </div>
+      <div class="bar-row" title="Awaiting video">
+        <div class="bar-label">Swing decisions (pitch selection)</div>
+        <div class="bar-track"><div class="bar-fill" data-score="pending" style="width:0%"></div></div>
+        <div class="bar-value">–/3</div>
+      </div>
     </div>
 
     <div class="table-scroll" style="margin-top:16px;">
       <table id="checklistTable">
         <thead>
-          <tr><th>Checkpoint</th><th>Score</th><th>Notes</th></tr>
+          <tr><th>Checkpoint</th><th>Score</th><th>Trend</th><th>Notes</th></tr>
         </thead>
         <tbody>
           <tr>
             <td>Stance &amp; setup</td>
             <td><span class="pill" data-score="pending">– · Awaiting video</span></td>
+            <td>—</td>
             <td class="notes">Awaiting video</td>
           </tr>
           <tr>
             <td>Load</td>
             <td><span class="pill" data-score="pending">– · Awaiting video</span></td>
+            <td>—</td>
             <td class="notes">Awaiting video</td>
           </tr>
           <tr>
             <td>Stride / front-foot plant</td>
             <td><span class="pill" data-score="pending">– · Awaiting video</span></td>
+            <td>—</td>
             <td class="notes">Awaiting video</td>
           </tr>
           <tr>
             <td>Hip-shoulder separation</td>
             <td><span class="pill" data-score="pending">– · Awaiting video</span></td>
+            <td>—</td>
             <td class="notes">Awaiting video</td>
           </tr>
           <tr>
             <td>Hand path to ball</td>
             <td><span class="pill" data-score="pending">– · Awaiting video</span></td>
+            <td>—</td>
             <td class="notes">Awaiting video</td>
           </tr>
           <tr>
             <td>Bat path through zone</td>
             <td><span class="pill" data-score="pending">– · Awaiting video</span></td>
+            <td>—</td>
             <td class="notes">Awaiting video</td>
           </tr>
           <tr>
             <td>Contact point</td>
             <td><span class="pill" data-score="pending">– · Awaiting video</span></td>
+            <td>—</td>
             <td class="notes">Awaiting video</td>
           </tr>
           <tr>
             <td>Extension</td>
             <td><span class="pill" data-score="pending">– · Awaiting video</span></td>
+            <td>—</td>
             <td class="notes">Awaiting video</td>
           </tr>
           <tr>
             <td>Head/eyes</td>
             <td><span class="pill" data-score="pending">– · Awaiting video</span></td>
+            <td>—</td>
             <td class="notes">Awaiting video</td>
           </tr>
           <tr>
             <td>Follow-through &amp; finish</td>
             <td><span class="pill" data-score="pending">– · Awaiting video</span></td>
+            <td>—</td>
+            <td class="notes">Awaiting video</td>
+          </tr>
+          <tr>
+            <td>Swing decisions (pitch selection)</td>
+            <td><span class="pill" data-score="pending">– · Awaiting video</span></td>
+            <td>—</td>
             <td class="notes">Awaiting video</td>
           </tr>
         </tbody>
@@ -384,18 +405,21 @@
 <script>
   // Edit this array: one row per at-bat filmed. Add a row every game, in order — this is the
   // running log that the checklist notes below should trace back to.
+  // "pitch" = location/type of the pitch she swung at (or took), e.g. "Outside, low",
+  // "Middle-middle", "Rise ball, high". Without it, a bad result on a tough pitch can get
+  // misread as a swing flaw — pitch context protects every conclusion below.
   const GAME_LOG = [
-    // { date: "2026-08-02", opponent: "Eagles", ab: 1, result: "K swinging", clip: "videos/{{slug}}_20260802_eagles_ab1.mp4" },
+    // { date: "2026-08-02", opponent: "Eagles", ab: 1, pitch: "Rise ball, high", result: "K swinging", clip: "videos/{{slug}}_20260802_eagles_ab1.mp4" },
   ];
 
   const gameLogBody = document.querySelector("#gameLogTable tbody");
   if (GAME_LOG.length === 0) {
-    gameLogBody.innerHTML = `<tr><td colspan="5" style="color:var(--text-muted);">No at-bats logged yet.</td></tr>`;
+    gameLogBody.innerHTML = `<tr><td colspan="6" style="color:var(--text-muted);">No at-bats logged yet.</td></tr>`;
   } else {
     gameLogBody.innerHTML = "";
     GAME_LOG.forEach(g => {
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${g.date}</td><td>${g.opponent}</td><td>${g.ab}</td><td>${g.result}</td><td class="notes">${g.clip}</td>`;
+      tr.innerHTML = `<td>${g.date}</td><td>${g.opponent}</td><td>${g.ab}</td><td>${g.pitch || "—"}</td><td>${g.result}</td><td class="notes">${g.clip}</td>`;
       gameLogBody.appendChild(tr);
     });
   }
@@ -404,17 +428,23 @@
   // Edit this array: one row per checklist checkpoint, score 1-3, notes describing the PATTERN
   // seen across the logged at-bats above (not just one swing).
   // Leave score as null (and notes as "Awaiting video") for a player who hasn't been filmed yet.
+  // "history" = prior scores from earlier film sessions, oldest first. When you re-score after
+  // new games, push the old score into history so the Trend column shows progression (e.g. 1 → 2).
+  // The last item, "Swing decisions", is approach rather than mechanics: does she swing at
+  // strikes and take balls? At 10U this is often the biggest skill gap — score it from the
+  // pitch column in the Game Log, not from swing shape.
   const CHECKLIST = [
-    { label: "Stance & setup", score: null, notes: "Awaiting video" },
-    { label: "Load", score: null, notes: "Awaiting video" },
-    { label: "Stride / front-foot plant", score: null, notes: "Awaiting video" },
-    { label: "Hip-shoulder separation", score: null, notes: "Awaiting video" },
-    { label: "Hand path to ball", score: null, notes: "Awaiting video" },
-    { label: "Bat path through zone", score: null, notes: "Awaiting video" },
-    { label: "Contact point", score: null, notes: "Awaiting video" },
-    { label: "Extension", score: null, notes: "Awaiting video" },
-    { label: "Head/eyes", score: null, notes: "Awaiting video" },
-    { label: "Follow-through & finish", score: null, notes: "Awaiting video" },
+    { label: "Stance & setup", score: null, history: [], notes: "Awaiting video" },
+    { label: "Load", score: null, history: [], notes: "Awaiting video" },
+    { label: "Stride / front-foot plant", score: null, history: [], notes: "Awaiting video" },
+    { label: "Hip-shoulder separation", score: null, history: [], notes: "Awaiting video" },
+    { label: "Hand path to ball", score: null, history: [], notes: "Awaiting video" },
+    { label: "Bat path through zone", score: null, history: [], notes: "Awaiting video" },
+    { label: "Contact point", score: null, history: [], notes: "Awaiting video" },
+    { label: "Extension", score: null, history: [], notes: "Awaiting video" },
+    { label: "Head/eyes", score: null, history: [], notes: "Awaiting video" },
+    { label: "Follow-through & finish", score: null, history: [], notes: "Awaiting video" },
+    { label: "Swing decisions (pitch selection)", score: null, history: [], notes: "Awaiting video" },
   ];
 
   const meaning = { 1: "Needs work", 2: "Developing", 3: "Solid" };
@@ -422,6 +452,11 @@
   const scoreAttr = s => isPending(s) ? "pending" : s;
   const scoreLabel = s => isPending(s) ? "–" : s;
   const scoreMeaning = s => isPending(s) ? "Awaiting video" : meaning[s];
+  const trendLabel = row => {
+    const hist = row.history || [];
+    if (!hist.length) return "—";
+    return hist.concat(isPending(row.score) ? [] : [row.score]).join(" → ");
+  };
 
   const barChart = document.getElementById("barChart");
   barChart.innerHTML = "";
@@ -444,6 +479,7 @@
     tr.innerHTML = `
       <td>${row.label}</td>
       <td><span class="pill" data-score="${scoreAttr(row.score)}">${scoreLabel(row.score)} · ${scoreMeaning(row.score)}</span></td>
+      <td>${trendLabel(row)}</td>
       <td class="notes">${row.notes}</td>
     `;
     tbody.appendChild(tr);
