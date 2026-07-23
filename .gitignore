@@ -1,0 +1,10 @@
+# Real swing footage and extracted frames never get published or committed —
+# only the reports (text/scores) go to GitHub Pages, never the media itself.
+videos/*
+!videos/.gitkeep
+frames/*
+!frames/.gitkeep
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db
