@@ -289,9 +289,15 @@
 
   <section>
     <h2>Team-Wide Patterns</h2>
-    <ul class="patterns">
-      <li><b>2 of 3 players (Maddie, Ava) score low on hip-shoulder separation / bat path</b> — worth a team station on hip-first sequencing (resistance-band hip drill) rather than three separate 1:1 fixes.</li>
-      <li><b>No one is over-scoring on power-oriented checkpoints</b> (extension, bat path) — team practice could lean toward a rotational-power station using the Ted Williams / Babe Ruth cues as a shared teaching image.</li>
+    <p class="hint" style="margin-top:0;">Auto-detected from the checklist scores of the players currently shown (updates with the search box above) — a checkpoint is flagged when the team average dips below 2.0, since that can't happen without at least one player needing work there.</p>
+    <ul class="patterns" id="detectedPatterns">
+      <li><b>Hip-Shoulder Sep.</b> — team avg 1.7, 1 of 3 scored players need work here. Worth a shared drill station.</li>
+      <li><b>Extension</b> — team avg 1.7, 1 of 3 scored players need work here. Worth a shared drill station.</li>
+      <li><b>Head/Eyes</b> — team avg 1.7, 1 of 3 scored players need work here. Worth a shared drill station.</li>
+    </ul>
+    <p class="hint" style="margin-top:14px;"><b>Coach notes</b> (add your own observations the numbers alone won't capture):</p>
+    <ul class="patterns" id="patternsList">
+      <li>Maddie and Ava both need hip-first sequencing work — a resistance-band hip drill station covers both instead of two separate 1:1 fixes.</li>
       <li>Sophia's only flag (head/eyes) is a good demo case for the rest of the team — worth having her show her tee work.</li>
     </ul>
   </section>
@@ -435,6 +441,37 @@
     return PLAYERS.filter(p => p.name.toLowerCase().includes(q));
   }
 
+  // A checkpoint is flagged when the team average (of players currently shown who have a score
+  // there) drops below 2.0. With integer 1-3 scores, an average under 2.0 is only possible if at
+  // least one player scored a 1 there, so this never fires on a false positive with zero players
+  // needing work. Sorted worst-average-first so the biggest shared weakness leads.
+  const PATTERN_AVG_THRESHOLD = 2.0;
+
+  function renderPatterns(list) {
+    const ul = document.getElementById("detectedPatterns");
+    const flagged = [];
+    for (let i = 0; i < CHECKPOINTS.length; i++) {
+      const scored = list.map(p => p.scores[i]).filter(s => s !== null && s !== undefined);
+      if (scored.length === 0) continue;
+      const avg = scored.reduce((sum, s) => sum + s, 0) / scored.length;
+      if (avg < PATTERN_AVG_THRESHOLD) {
+        const needsWork = scored.filter(s => s === 1).length;
+        flagged.push({ checkpoint: CHECKPOINTS[i], avg, needsWork, scoredCount: scored.length });
+      }
+    }
+    flagged.sort((a, b) => a.avg - b.avg);
+    if (flagged.length === 0) {
+      const anyScored = list.some(p => p.scores.some(s => s !== null && s !== undefined));
+      ul.innerHTML = anyScored
+        ? `<li>No shared weak points detected among the players currently shown — team averages are all at or above ${PATTERN_AVG_THRESHOLD.toFixed(1)}.</li>`
+        : `<li>No scores entered yet — once a few players are scored, shared weak points will show up here automatically.</li>`;
+    } else {
+      ul.innerHTML = flagged.map(f =>
+        `<li><b>${f.checkpoint}</b> — team avg ${f.avg.toFixed(1)}, ${f.needsWork} of ${f.scoredCount} scored players need work here. Worth a shared drill station.</li>`
+      ).join("");
+    }
+  }
+
   function renderAll() {
     let list = currentFiltered();
     if (sortState.key !== null) {
@@ -449,6 +486,7 @@
     renderSummary(list);
     renderHeat(list);
     renderLinks(list);
+    renderPatterns(list);
   }
 
   document.getElementById("search").addEventListener("input", renderAll);
