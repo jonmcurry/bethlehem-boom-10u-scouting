@@ -149,7 +149,27 @@
     white-space: nowrap;
   }
   .review-badge.ai-draft { border: 1px dashed var(--text-muted); color: var(--text-muted); }
+  .review-badge.drifted { border: 1px dashed var(--status-warning); color: #8a5a00; }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .review-badge.drifted { color: var(--status-warning); }
+  }
+  :root[data-theme="dark"] .review-badge.drifted { color: var(--status-warning); }
   .review-badge.confirmed { background: color-mix(in srgb, var(--status-good) 14%, transparent); color: var(--status-good); border: 1px solid transparent; }
+
+  .evidence-warning {
+    background: color-mix(in srgb, var(--status-warning) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--status-warning) 40%, transparent);
+    color: #8a5a00;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .evidence-warning { color: var(--status-warning); }
+  }
+  :root[data-theme="dark"] .evidence-warning { color: var(--status-warning); }
 
   details { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
   details + details { margin-top: 10px; }
@@ -225,6 +245,8 @@
       <span>🤖 AI draft = not yet reviewed by a coach</span>
       <span>✓ name = coach-confirmed (adjusted score noted if it differs from the AI draft)</span>
     </div>
+
+    <div id="evidenceWarning"></div>
 
     <div id="barChart">
       <div class="bar-row" title="Good width, hands relaxed at load position">
@@ -421,6 +443,11 @@
 </div>
 
 <script>
+  // Matches the 4 static Game Log rows above (this file predates the template's JS-driven
+  // GAME_LOG array, so the count is tracked directly rather than derived).
+  const LOGGED_AT_BATS = 4;
+  const MIN_ATBATS_FOR_PATTERN = 3;
+
   // history = prior scores from earlier film sessions (oldest first); Trend column shows
   // history + current score, e.g. "1 → 2".
   // aiDraft/reviewedBy = coach-validation workflow: null reviewedBy shows an "🤖 AI draft"
@@ -448,6 +475,9 @@
   };
   const reviewBadge = row => {
     if (!row.reviewedBy) {
+      if (row.aiDraft != null && row.aiDraft !== row.score) {
+        return `<br><span class="review-badge drifted" title="Score changed from the original AI draft (${row.aiDraft}) without a coach confirming — needs review">🤖 edited, unconfirmed</span>`;
+      }
       return `<br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span>`;
     }
     const diff = (row.aiDraft != null && row.aiDraft !== row.score)
@@ -455,6 +485,13 @@
       : "";
     return `<br><span class="review-badge confirmed" title="Confirmed by ${row.reviewedBy}${diff}">✓ ${row.reviewedBy}</span>`;
   };
+
+  const evidenceWarningEl = document.getElementById("evidenceWarning");
+  if (LOGGED_AT_BATS < MIN_ATBATS_FOR_PATTERN) {
+    evidenceWarningEl.innerHTML = `<div class="evidence-warning">⚠ Only ${LOGGED_AT_BATS} at-bat${LOGGED_AT_BATS === 1 ? "" : "s"} logged — treat the scores and diagnosis below as an early read, not a confirmed pattern, until at least ${MIN_ATBATS_FOR_PATTERN} are in.</div>`;
+  } else {
+    evidenceWarningEl.innerHTML = "";
+  }
 
   const barChart = document.getElementById("barChart");
   barChart.innerHTML = "";

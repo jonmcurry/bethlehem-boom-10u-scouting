@@ -158,6 +158,21 @@
   :root[data-theme="dark"] .review-badge.drifted { color: var(--status-warning); }
   .review-badge.confirmed { background: color-mix(in srgb, var(--status-good) 14%, transparent); color: var(--status-good); border: 1px solid transparent; }
 
+  .evidence-warning {
+    background: color-mix(in srgb, var(--status-warning) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--status-warning) 40%, transparent);
+    color: #8a5a00;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .evidence-warning { color: var(--status-warning); }
+  }
+  :root[data-theme="dark"] .evidence-warning { color: var(--status-warning); }
+
   details { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
   details + details { margin-top: 10px; }
   summary {
@@ -231,6 +246,8 @@
       <span>🤖 AI draft = not yet reviewed by a coach</span>
       <span>✓ name = coach-confirmed (adjusted score noted if it differs from the AI draft)</span>
     </div>
+
+    <div id="evidenceWarning"></div>
 
     <div id="barChart">
       <div class="bar-row" title="Awaiting video">
@@ -449,6 +466,11 @@
   }
   document.getElementById("abCount").textContent = GAME_LOG.length;
 
+  // "A pattern" means at least this many logged at-bats. Below this, a score reflects one or
+  // two swings, not a real trend - the evidence-warning banner below makes that visible instead
+  // of letting a thin sample quietly pass as a settled read.
+  const MIN_ATBATS_FOR_PATTERN = 3;
+
   // Edit this array: one row per checklist checkpoint, score 1-3, notes describing the PATTERN
   // seen across the logged at-bats above (not just one swing).
   // Leave score as null (and notes as "Awaiting video") for a player who hasn't been filmed yet.
@@ -504,6 +526,17 @@
     return `<br><span class="review-badge confirmed" title="Confirmed by ${row.reviewedBy}${diff}">✓ ${row.reviewedBy}</span>`;
   };
 
+  // "Don't diagnose off one swing" as a computed check, not just stated policy: if any score
+  // has been entered while the Game Log is still thinner than MIN_ATBATS_FOR_PATTERN, say so
+  // visibly instead of letting a 1-2 at-bat read quietly pass as a settled pattern.
+  const evidenceWarningEl = document.getElementById("evidenceWarning");
+  const hasAnyScore = CHECKLIST.some(row => !isPending(row.score));
+  if (hasAnyScore && GAME_LOG.length < MIN_ATBATS_FOR_PATTERN) {
+    evidenceWarningEl.innerHTML = `<div class="evidence-warning">⚠ Only ${GAME_LOG.length} at-bat${GAME_LOG.length === 1 ? "" : "s"} logged — treat the scores and diagnosis below as an early read, not a confirmed pattern, until at least ${MIN_ATBATS_FOR_PATTERN} are in.</div>`;
+  } else {
+    evidenceWarningEl.innerHTML = "";
+  }
+
   const barChart = document.getElementById("barChart");
   barChart.innerHTML = "";
   CHECKLIST.forEach(row => {
@@ -535,10 +568,16 @@
   // reviewedBy works the same way as the checklist's coach-validation fields: leave null while
   // it's Claude's read of the frames (renders an "AI draft" badge); set to a coach's name once
   // they've confirmed the diagnosis against what they actually saw live.
+  //
+  // seenInAtBats discipline: don't just list AB numbers — note the pitch quality from the Game
+  // Log's Pitch column for at least one cited at-bat, so the issue distinguishes "this is the
+  // swing" from "this is what a tough pitch does to any swing." e.g. "AB 1 vs Storm (7/12) was
+  // middle-middle, so the rollover there is the swing, not the pitch." A citation with no pitch
+  // context is a weaker claim than one that rules out the pitch as the cause.
   const ISSUES = [
     // {
     //   issue: "e.g. Steps in the bucket — front foot opens toward third base before the swing starts",
-    //   seenInAtBats: "e.g. AB 1 vs Eagles (8/2), AB 2 vs Hawks (8/9) — cite specific Game Log rows",
+    //   seenInAtBats: "e.g. AB 1 vs Eagles (8/2, middle-middle - so this is the swing, not the pitch), AB 2 vs Hawks (8/9)",
     //   likelyCause: "e.g. fear of the ball / no weight transfer practice",
     //   effect: "e.g. pulls off outside pitches, rolls over to weak grounders",
     //   reviewedBy: null,
