@@ -70,27 +70,42 @@ are gitignored — real footage never leaves your machine.
 7. Copy that player's `strength` / `issue` / `drill` / `comp` / `scores` into the matching entry in `reports/team_summary.html`'s `PLAYERS` array. The side-by-side table, heat map, and live team-average row are all generated from that array — sortable and filterable in the browser, and the average row recalculates automatically as more players get scored.
    - **Team-Wide Patterns are auto-detected, not hand-written:** a checkpoint gets flagged automatically whenever the team average (of players currently shown, respecting the search box) drops below 2.0 — that can't happen without at least one player needing work there. Flagged checkpoints are listed worst-average-first. There's a separate "Coach notes" list below it for free-text observations the numbers can't capture (e.g. a specific drill recommendation) — that part's still manual by design, since it's where real coaching judgment adds something the raw scores can't.
 
-## On the MLB legend comps
+## On the reference comp banks
 
-Shoeless Joe Jackson, Ty Cobb, Pete Rose, Ted Williams, Barry Bonds, Lou Gehrig, Babe Ruth, and
-Ichiro Suzuki are used in the individual report template as **named cues for isolated mechanics**
-(e.g. "match the pitch plane like Ted Williams," "short direct hands like Ichiro") — not as literal
-swing templates. Softball and baseball differ enough (rise ball, pitch distance, bat weighting)
-that the primary comps for anything rise-ball- or timing-specific should be elite softball
-hitters (e.g. Jocelyn Alo, Lauren Chamberlain, Amanda Chidester — University of Michigan, not
-Alabama — Natasha Watley for slap-style hitters). Build out a running list of softball comps as
-you identify good reference clips.
+The individual report template carries two reference banks in its "Reference Comp" section —
+**weight the softball bank first**, since it's the same sport and same rise-ball timing:
 
-**Accuracy check (2026-07-23):** the mechanics checklist, hip-shoulder separation terminology,
-and all 8 MLB comps + 4 softball comps were fact-checked against real hitting-instruction and
-historical sources. Two corrections came out of it, both applied to the report template: Ted
-Williams' documented signature is pitch-plane matching (slight upward bat path), not "hip
-rotation" specifically; Barry Bonds' well-documented trait is rotational hip-to-hand separation,
-not a specific "short/compact load." Lou Gehrig is the weakest-sourced comp of the group — he's
-genuinely famous for durability/consistency (2,130 consecutive games), not a documented swing
-technique, so his cue is framed around routine/consistency rather than mechanics. One live,
-unsettled debate worth knowing about: some modern hitting instructors argue softball and baseball
-swings are mechanically more alike than traditionally taught, and that "flatter swing for the rise
-ball" oversimplifies — the real difference is pitch timing/trajectory, not bat path philosophy.
-This project doesn't take a side on that debate; it just weights softball comps heavily for
-anything timing-specific, which holds either way.
+- **Softball bank** (6 comps, each with a specific sourced mechanical/approach trait, not just a
+  career stat line): Jocelyn Alo (Oklahoma — shortened a long swing to control the zone under
+  pressure without losing power), Lauren Chamberlain (Oklahoma — kept the barrel through the zone
+  longer for lift instead of a short chop), Amanda Chidester (Michigan/Team USA — swings at ~85%
+  effort deliberately, trading power for zone-wide consistency), Sierra Romero (Michigan — lets
+  the ball travel deep before releasing the barrel), Natasha Watley (UCLA/Team USA — documented
+  slap-hitting footwork and hand path), Haylie McCleney (Alabama/Team USA — hips→torso→shoulders→
+  barrel sequencing and plate discipline, ties directly to the swing-decisions checkpoint).
+- **MLB bank** (8 comps): Shoeless Joe Jackson, Ty Cobb, Pete Rose, Ted Williams, Barry Bonds, Lou
+  Gehrig, Babe Ruth, Ichiro Suzuki — **named cues for isolated mechanics only** (e.g. "match the
+  pitch plane like Ted Williams"), not literal swing templates, and a weaker fit than the softball
+  bank for anything rise-ball- or timing-specific.
+
+**Accuracy check (2026-07-23, two passes):**
+- *Pass 1:* the mechanics checklist, hip-shoulder separation terminology, and all 8 MLB comps were
+  fact-checked against real hitting-instruction and historical sources. Two corrections: Ted
+  Williams' documented signature is pitch-plane matching (slight upward bat path), not "hip
+  rotation" specifically; Barry Bonds' well-documented trait is rotational hip-to-hand separation,
+  not a specific "short/compact load." Lou Gehrig is the weakest-sourced comp of the group — he's
+  genuinely famous for durability/consistency (2,130 consecutive games), not a documented swing
+  technique, so his cue is framed around routine/consistency rather than mechanics.
+- *Pass 2:* the softball side got the same rigor. The original softball mentions (Alo, Chamberlain,
+  Chidester, Watley) had only been fact-checked for career stats/records, never for the specific
+  mechanical claims attributed to them — and one of those claims ("Alo shortens her stride, letting
+  hips do the opening") turned out to be entirely unsourced/fabricated once actually checked. All 6
+  comps now listed above have a specific, cited mechanical trait; candidates without one
+  (Crystl Bustos, Dot Richardson, Kelly Kretschman) were investigated and dropped rather than
+  included with a manufactured claim.
+
+One live, unsettled debate worth knowing about: some modern hitting instructors argue softball and
+baseball swings are mechanically more alike than traditionally taught, and that "flatter swing for
+the rise ball" oversimplifies — the real difference is pitch timing/trajectory, not bat path
+philosophy. This project doesn't take a side on that debate; it just weights softball comps
+heavily for anything timing-specific, which holds either way.
