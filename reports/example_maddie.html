@@ -139,6 +139,18 @@
   }
   :root[data-theme="dark"] .pill[data-score="2"] { color: var(--status-warning); }
 
+  .review-badge {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .review-badge.ai-draft { border: 1px dashed var(--text-muted); color: var(--text-muted); }
+  .review-badge.confirmed { background: color-mix(in srgb, var(--status-good) 14%, transparent); color: var(--status-good); border: 1px solid transparent; }
+
   details { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
   details + details { margin-top: 10px; }
   summary {
@@ -210,6 +222,8 @@
       <span><span class="dot" style="background:var(--status-critical)"></span>1 — Needs work</span>
       <span><span class="dot" style="background:var(--status-warning)"></span>2 — Developing</span>
       <span><span class="dot" style="background:var(--status-good)"></span>3 — Solid</span>
+      <span>🤖 AI draft = not yet reviewed by a coach</span>
+      <span>✓ name = coach-confirmed (adjusted score noted if it differs from the AI draft)</span>
     </div>
 
     <div id="barChart">
@@ -278,67 +292,67 @@
         <tbody>
           <tr>
             <td>Stance &amp; setup</td>
-            <td><span class="pill" data-score="3">3 · Solid</span></td>
+            <td><span class="pill" data-score="3">3 · Solid</span><br><span class="review-badge confirmed" title="Confirmed by Coach Bill">✓ Coach Bill</span></td>
             <td>—</td>
             <td class="notes">Good width, hands relaxed at load position</td>
           </tr>
           <tr>
             <td>Load</td>
-            <td><span class="pill" data-score="2">2 · Developing</span></td>
+            <td><span class="pill" data-score="2">2 · Developing</span><br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span></td>
             <td>1 → 2</td>
             <td class="notes">Slight extra hand movement before triggering, but weight shift is there — improved since the Storm games</td>
           </tr>
           <tr>
             <td>Stride / front-foot plant</td>
-            <td><span class="pill" data-score="1">1 · Needs work</span></td>
+            <td><span class="pill" data-score="1">1 · Needs work</span><br><span class="review-badge confirmed" title="Confirmed by Coach Bill">✓ Coach Bill</span></td>
             <td>1 → 1</td>
             <td class="notes">Front foot opens toward the third-base dugout well before the swing starts — no change yet across both games</td>
           </tr>
           <tr>
             <td>Hip-shoulder separation</td>
-            <td><span class="pill" data-score="2">2 · Developing</span></td>
+            <td><span class="pill" data-score="2">2 · Developing</span><br><span class="review-badge confirmed" title="Confirmed by Coach Kathleen — AI drafted 1, adjusted after review">✓ Coach Kathleen</span></td>
             <td>—</td>
-            <td class="notes">Some separation, but gets rushed because the stride opens early</td>
+            <td class="notes">Some separation, but gets rushed because the stride opens early — Coach Kathleen saw more separation live than the stills captured</td>
           </tr>
           <tr>
             <td>Hand path to ball</td>
-            <td><span class="pill" data-score="1">1 · Needs work</span></td>
+            <td><span class="pill" data-score="1">1 · Needs work</span><br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span></td>
             <td>—</td>
             <td class="notes">Barrel casts out and away from the body on the way down</td>
           </tr>
           <tr>
             <td>Bat path through zone</td>
-            <td><span class="pill" data-score="2">2 · Developing</span></td>
+            <td><span class="pill" data-score="2">2 · Developing</span><br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span></td>
             <td>—</td>
             <td class="notes">Reasonably flat once she squares up, but casting adds a loop</td>
           </tr>
           <tr>
             <td>Contact point</td>
-            <td><span class="pill" data-score="2">2 · Developing</span></td>
+            <td><span class="pill" data-score="2">2 · Developing</span><br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span></td>
             <td>—</td>
             <td class="notes">Contact is slightly deep because the open stride costs her time</td>
           </tr>
           <tr>
             <td>Extension</td>
-            <td><span class="pill" data-score="2">2 · Developing</span></td>
+            <td><span class="pill" data-score="2">2 · Developing</span><br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span></td>
             <td>—</td>
             <td class="notes">Decent extension on pitches she squares up</td>
           </tr>
           <tr>
             <td>Head/eyes</td>
-            <td><span class="pill" data-score="2">2 · Developing</span></td>
+            <td><span class="pill" data-score="2">2 · Developing</span><br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span></td>
             <td>—</td>
             <td class="notes">Head drifts with the front foot but doesn't fly open badly</td>
           </tr>
           <tr>
             <td>Follow-through &amp; finish</td>
-            <td><span class="pill" data-score="2">2 · Developing</span></td>
+            <td><span class="pill" data-score="2">2 · Developing</span><br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span></td>
             <td>—</td>
             <td class="notes">Finishes a little off-balance toward third</td>
           </tr>
           <tr>
             <td>Swing decisions (pitch selection)</td>
-            <td><span class="pill" data-score="2">2 · Developing</span></td>
+            <td><span class="pill" data-score="2">2 · Developing</span><br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span></td>
             <td>—</td>
             <td class="notes">Chased the high rise ball in AB 2 vs Storm, but took the low outside pitch well vs Comets — improving strike-zone judgment</td>
           </tr>
@@ -407,18 +421,21 @@
 <script>
   // history = prior scores from earlier film sessions (oldest first); Trend column shows
   // history + current score, e.g. "1 → 2".
+  // aiDraft/reviewedBy = coach-validation workflow: null reviewedBy shows an "🤖 AI draft"
+  // badge; a coach's name shows a confirmed badge, noting the AI's original number if the
+  // coach adjusted it (see Hip-shoulder separation below for an example of an adjustment).
   const CHECKLIST = [
-    { label: "Stance & setup", score: 3, history: [], notes: "Good width, hands relaxed at load position" },
-    { label: "Load", score: 2, history: [1], notes: "Slight extra hand movement before triggering, but weight shift is there — improved since the Storm games" },
-    { label: "Stride / front-foot plant", score: 1, history: [1], notes: "Front foot opens toward the third-base dugout well before the swing starts — no change yet across both games" },
-    { label: "Hip-shoulder separation", score: 2, history: [], notes: "Some separation, but gets rushed because the stride opens early" },
-    { label: "Hand path to ball", score: 1, history: [], notes: "Barrel casts out and away from the body on the way down" },
-    { label: "Bat path through zone", score: 2, history: [], notes: "Reasonably flat once she squares up, but casting adds a loop" },
-    { label: "Contact point", score: 2, history: [], notes: "Contact is slightly deep because the open stride costs her time" },
-    { label: "Extension", score: 2, history: [], notes: "Decent extension on pitches she squares up" },
-    { label: "Head/eyes", score: 2, history: [], notes: "Head drifts with the front foot but doesn't fly open badly" },
-    { label: "Follow-through & finish", score: 2, history: [], notes: "Finishes a little off-balance toward third" },
-    { label: "Swing decisions (pitch selection)", score: 2, history: [], notes: "Chased the high rise ball in AB 2 vs Storm, but took the low outside pitch well vs Comets — improving strike-zone judgment" },
+    { label: "Stance & setup", score: 3, aiDraft: 3, reviewedBy: "Coach Bill", history: [], notes: "Good width, hands relaxed at load position" },
+    { label: "Load", score: 2, aiDraft: 2, reviewedBy: null, history: [1], notes: "Slight extra hand movement before triggering, but weight shift is there — improved since the Storm games" },
+    { label: "Stride / front-foot plant", score: 1, aiDraft: 1, reviewedBy: "Coach Bill", history: [1], notes: "Front foot opens toward the third-base dugout well before the swing starts — no change yet across both games" },
+    { label: "Hip-shoulder separation", score: 2, aiDraft: 1, reviewedBy: "Coach Kathleen", history: [], notes: "Some separation, but gets rushed because the stride opens early — Coach Kathleen saw more separation live than the stills captured" },
+    { label: "Hand path to ball", score: 1, aiDraft: 1, reviewedBy: null, history: [], notes: "Barrel casts out and away from the body on the way down" },
+    { label: "Bat path through zone", score: 2, aiDraft: 2, reviewedBy: null, history: [], notes: "Reasonably flat once she squares up, but casting adds a loop" },
+    { label: "Contact point", score: 2, aiDraft: 2, reviewedBy: null, history: [], notes: "Contact is slightly deep because the open stride costs her time" },
+    { label: "Extension", score: 2, aiDraft: 2, reviewedBy: null, history: [], notes: "Decent extension on pitches she squares up" },
+    { label: "Head/eyes", score: 2, aiDraft: 2, reviewedBy: null, history: [], notes: "Head drifts with the front foot but doesn't fly open badly" },
+    { label: "Follow-through & finish", score: 2, aiDraft: 2, reviewedBy: null, history: [], notes: "Finishes a little off-balance toward third" },
+    { label: "Swing decisions (pitch selection)", score: 2, aiDraft: 2, reviewedBy: null, history: [], notes: "Chased the high rise ball in AB 2 vs Storm, but took the low outside pitch well vs Comets — improving strike-zone judgment" },
   ];
 
   const meaning = { 1: "Needs work", 2: "Developing", 3: "Solid" };
@@ -426,6 +443,15 @@
     const hist = row.history || [];
     if (!hist.length) return "—";
     return hist.concat([row.score]).join(" → ");
+  };
+  const reviewBadge = row => {
+    if (!row.reviewedBy) {
+      return `<br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span>`;
+    }
+    const diff = (row.aiDraft != null && row.aiDraft !== row.score)
+      ? ` — AI drafted ${row.aiDraft}, adjusted after review`
+      : "";
+    return `<br><span class="review-badge confirmed" title="Confirmed by ${row.reviewedBy}${diff}">✓ ${row.reviewedBy}</span>`;
   };
 
   const barChart = document.getElementById("barChart");
@@ -448,7 +474,7 @@
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${row.label}</td>
-      <td><span class="pill" data-score="${row.score}">${row.score} · ${meaning[row.score]}</span></td>
+      <td><span class="pill" data-score="${row.score}">${row.score} · ${meaning[row.score]}</span>${reviewBadge(row)}</td>
       <td>${trendLabel(row)}</td>
       <td class="notes">${row.notes}</td>
     `;

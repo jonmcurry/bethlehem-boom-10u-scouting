@@ -141,6 +141,18 @@
   }
   :root[data-theme="dark"] .pill[data-score="2"] { color: var(--status-warning); }
 
+  .review-badge {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .review-badge.ai-draft { border: 1px dashed var(--text-muted); color: var(--text-muted); }
+  .review-badge.confirmed { background: color-mix(in srgb, var(--status-good) 14%, transparent); color: var(--status-good); border: 1px solid transparent; }
+
   details { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
   details + details { margin-top: 10px; }
   summary {
@@ -209,6 +221,8 @@
       <span><span class="dot" style="background:var(--status-critical)"></span>1 — Needs work</span>
       <span><span class="dot" style="background:var(--status-warning)"></span>2 — Developing</span>
       <span><span class="dot" style="background:var(--status-good)"></span>3 — Solid</span>
+      <span>🤖 AI draft = not yet reviewed by a coach</span>
+      <span>✓ name = coach-confirmed (adjusted score noted if it differs from the AI draft)</span>
     </div>
 
     <div id="barChart">
@@ -440,18 +454,24 @@
   // The last item, "Swing decisions", is approach rather than mechanics: does she swing at
   // strikes and take balls? At 10U this is often the biggest skill gap — score it from the
   // pitch column in the Game Log, not from swing shape.
+  //
+  // "aiDraft" / "reviewedBy" — AI-assisted scoring workflow: when Claude scores a checkpoint from
+  // frames, set score AND aiDraft to that value and leave reviewedBy as null (shows as an
+  // unconfirmed "AI draft" badge). When a coach reviews it, set reviewedBy to their name; if they
+  // agree, leave score as-is; if they disagree, change score but leave aiDraft untouched — the
+  // badge will then show both, so the AI-vs-coach gap is never silently lost.
   const CHECKLIST = [
-    { label: "Stance & setup", score: null, history: [], notes: "Awaiting video" },
-    { label: "Load", score: null, history: [], notes: "Awaiting video" },
-    { label: "Stride / front-foot plant", score: null, history: [], notes: "Awaiting video" },
-    { label: "Hip-shoulder separation", score: null, history: [], notes: "Awaiting video" },
-    { label: "Hand path to ball", score: null, history: [], notes: "Awaiting video" },
-    { label: "Bat path through zone", score: null, history: [], notes: "Awaiting video" },
-    { label: "Contact point", score: null, history: [], notes: "Awaiting video" },
-    { label: "Extension", score: null, history: [], notes: "Awaiting video" },
-    { label: "Head/eyes", score: null, history: [], notes: "Awaiting video" },
-    { label: "Follow-through & finish", score: null, history: [], notes: "Awaiting video" },
-    { label: "Swing decisions (pitch selection)", score: null, history: [], notes: "Awaiting video" },
+    { label: "Stance & setup", score: null, aiDraft: null, reviewedBy: null, history: [], notes: "Awaiting video" },
+    { label: "Load", score: null, aiDraft: null, reviewedBy: null, history: [], notes: "Awaiting video" },
+    { label: "Stride / front-foot plant", score: null, aiDraft: null, reviewedBy: null, history: [], notes: "Awaiting video" },
+    { label: "Hip-shoulder separation", score: null, aiDraft: null, reviewedBy: null, history: [], notes: "Awaiting video" },
+    { label: "Hand path to ball", score: null, aiDraft: null, reviewedBy: null, history: [], notes: "Awaiting video" },
+    { label: "Bat path through zone", score: null, aiDraft: null, reviewedBy: null, history: [], notes: "Awaiting video" },
+    { label: "Contact point", score: null, aiDraft: null, reviewedBy: null, history: [], notes: "Awaiting video" },
+    { label: "Extension", score: null, aiDraft: null, reviewedBy: null, history: [], notes: "Awaiting video" },
+    { label: "Head/eyes", score: null, aiDraft: null, reviewedBy: null, history: [], notes: "Awaiting video" },
+    { label: "Follow-through & finish", score: null, aiDraft: null, reviewedBy: null, history: [], notes: "Awaiting video" },
+    { label: "Swing decisions (pitch selection)", score: null, aiDraft: null, reviewedBy: null, history: [], notes: "Awaiting video" },
   ];
 
   const meaning = { 1: "Needs work", 2: "Developing", 3: "Solid" };
@@ -463,6 +483,16 @@
     const hist = row.history || [];
     if (!hist.length) return "—";
     return hist.concat(isPending(row.score) ? [] : [row.score]).join(" → ");
+  };
+  const reviewBadge = row => {
+    if (isPending(row.score)) return "";
+    if (!row.reviewedBy) {
+      return `<br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span>`;
+    }
+    const diff = (row.aiDraft != null && row.aiDraft !== row.score)
+      ? ` — AI drafted ${row.aiDraft}, adjusted after review`
+      : "";
+    return `<br><span class="review-badge confirmed" title="Confirmed by ${row.reviewedBy}${diff}">✓ ${row.reviewedBy}</span>`;
   };
 
   const barChart = document.getElementById("barChart");
@@ -485,7 +515,7 @@
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${row.label}</td>
-      <td><span class="pill" data-score="${scoreAttr(row.score)}">${scoreLabel(row.score)} · ${scoreMeaning(row.score)}</span></td>
+      <td><span class="pill" data-score="${scoreAttr(row.score)}">${scoreLabel(row.score)} · ${scoreMeaning(row.score)}</span>${reviewBadge(row)}</td>
       <td>${trendLabel(row)}</td>
       <td class="notes">${row.notes}</td>
     `;
