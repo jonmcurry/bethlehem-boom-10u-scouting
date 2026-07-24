@@ -366,18 +366,20 @@
 
     <details open>
       <summary>Primary Issue(s) Identified</summary>
-      <div class="details-body">
+      <div class="details-body" id="issuesContainer">
         <div class="issue-card">
           <b>Issue:</b> Steps in the bucket — front foot opens toward third base before the swing starts.<br>
           <b>Seen in at-bats:</b> AB 1 &amp; 2 vs Storm (7/12), AB 1 vs Comets (7/19) — note AB 1 vs Storm was middle-middle, so the rollover there is the swing, not the pitch.<br>
           <b>Likely cause:</b> Front-side flinch, likely some discomfort with inside pitches or rise balls.<br>
           <b>Effect on outcomes:</b> Rolls over on outside pitches for weak grounders to the left side; late/deep contact reduces power.
+          <div style="margin-top:8px;"><span class="review-badge confirmed" title="Confirmed by Coach Bill">✓ Coach Bill</span></div>
         </div>
         <div class="issue-card">
           <b>Issue:</b> Casts the barrel away from the body during the downswing.<br>
           <b>Seen in at-bats:</b> AB 1 vs Storm (7/12), AB 1 vs Comets (7/19).<br>
           <b>Likely cause:</b> Compensating for the early-opening front foot — hands have to reroute to get back to the ball.<br>
           <b>Effect on outcomes:</b> Loopy bat path, inconsistent contact quality, occasional swing-and-miss on anything up.
+          <div style="margin-top:8px;"><span class="review-badge ai-draft" title="AI-drafted diagnosis, not yet reviewed by a coach">🤖 AI draft</span></div>
         </div>
       </div>
     </details>
@@ -479,6 +481,42 @@
       <td class="notes">${row.notes}</td>
     `;
     tbody.appendChild(tr);
+  });
+
+  const ISSUES = [
+    {
+      issue: "Steps in the bucket — front foot opens toward third base before the swing starts.",
+      seenInAtBats: "AB 1 &amp; 2 vs Storm (7/12), AB 1 vs Comets (7/19) — note AB 1 vs Storm was middle-middle, so the rollover there is the swing, not the pitch.",
+      likelyCause: "Front-side flinch, likely some discomfort with inside pitches or rise balls.",
+      effect: "Rolls over on outside pitches for weak grounders to the left side; late/deep contact reduces power.",
+      reviewedBy: "Coach Bill",
+    },
+    {
+      issue: "Casts the barrel away from the body during the downswing.",
+      seenInAtBats: "AB 1 vs Storm (7/12), AB 1 vs Comets (7/19).",
+      likelyCause: "Compensating for the early-opening front foot — hands have to reroute to get back to the ball.",
+      effect: "Loopy bat path, inconsistent contact quality, occasional swing-and-miss on anything up.",
+      reviewedBy: null,
+    },
+  ];
+
+  const issueReviewBadge = iss => iss.reviewedBy
+    ? `<div style="margin-top:8px;"><span class="review-badge confirmed" title="Confirmed by ${iss.reviewedBy}">✓ ${iss.reviewedBy}</span></div>`
+    : `<div style="margin-top:8px;"><span class="review-badge ai-draft" title="AI-drafted diagnosis, not yet reviewed by a coach">🤖 AI draft</span></div>`;
+
+  const issuesContainer = document.getElementById("issuesContainer");
+  issuesContainer.innerHTML = "";
+  ISSUES.forEach(iss => {
+    const div = document.createElement("div");
+    div.className = "issue-card";
+    div.innerHTML = `
+      <b>Issue:</b> ${iss.issue}<br>
+      <b>Seen in at-bats:</b> ${iss.seenInAtBats}<br>
+      <b>Likely cause:</b> ${iss.likelyCause}<br>
+      <b>Effect on outcomes:</b> ${iss.effect}
+      ${issueReviewBadge(iss)}
+    `;
+    issuesContainer.appendChild(div);
   });
 
   const toggle = document.getElementById("themeToggle");

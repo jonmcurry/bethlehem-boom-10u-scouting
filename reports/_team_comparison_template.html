@@ -168,6 +168,15 @@
   .pill.pending { background: var(--gridline); color: var(--text-muted); }
   .pill.avg { color: var(--text-primary); font-weight: 700; border: 1px solid var(--border); }
 
+  .review-rollup { font-size: 10px; font-weight: 600; margin-top: 4px; white-space: nowrap; }
+  .review-rollup.full { color: var(--status-good); }
+  .review-rollup.partial { color: #8a5a00; }
+  .review-rollup.none { color: var(--text-muted); }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .review-rollup.partial { color: var(--status-warning); }
+  }
+  :root[data-theme="dark"] .review-rollup.partial { color: var(--status-warning); }
+
   tr.avg-row td { border-top: 2px solid var(--gridline); border-bottom: none; font-weight: 600; }
   tr.avg-row td:first-child { color: var(--text-secondary); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.03em; }
 
@@ -218,7 +227,7 @@
             <td class="wrap-cell">{{primary issue}}</td>
             <td class="wrap-cell">{{fix focus / drill}}</td>
             <td class="wrap-cell">{{comp cue}}</td>
-            <td><span class="report-link disabled">No report yet</span></td>
+            <td><span class="report-link disabled">No report yet</span><div class="review-rollup none" title="0 of 11 scored checkpoints are coach-confirmed; the rest are still AI-drafted">0/11 confirmed</div></td>
           </tr>
           <tr>
             <td class="player-name">{{Player 2 name}}</td>
@@ -226,7 +235,7 @@
             <td class="wrap-cell">{{primary issue}}</td>
             <td class="wrap-cell">{{fix focus / drill}}</td>
             <td class="wrap-cell">{{comp cue}}</td>
-            <td><span class="report-link disabled">No report yet</span></td>
+            <td><span class="report-link disabled">No report yet</span><div class="review-rollup none" title="0 of 11 scored checkpoints are coach-confirmed; the rest are still AI-drafted">0/11 confirmed</div></td>
           </tr>
         </tbody>
       </table>
@@ -305,6 +314,7 @@
       comp: "{{comp cue}}",
       report: null,
       scores: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      reviewedCount: 0,
     },
     {
       name: "{{Player 2 name}}",
@@ -314,6 +324,7 @@
       comp: "{{comp cue}}",
       report: null,
       scores: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      reviewedCount: 0,
     },
     // copy/paste another object per additional player
   ];
@@ -326,6 +337,14 @@
       return `<span class="pill pending ${extraClass||''}" title="Awaiting video">–</span>`;
     }
     return `<span class="pill ${extraClass||''}" data-score="${Math.round(score)}" title="${meaning[Math.round(score)] || ''}">${score}</span>`;
+  }
+
+  function reviewRollup(p) {
+    const scoredCount = (p.scores || []).filter(s => s !== null && s !== undefined).length;
+    if (scoredCount === 0) return "";
+    const reviewed = p.reviewedCount || 0;
+    const cls = reviewed === scoredCount ? "full" : reviewed > 0 ? "partial" : "none";
+    return `<div class="review-rollup ${cls}" title="${reviewed} of ${scoredCount} scored checkpoints are coach-confirmed; the rest are still AI-drafted">${reviewed}/${scoredCount} confirmed</div>`;
   }
 
   function renderSummary(list) {
@@ -342,7 +361,7 @@
         <td class="wrap-cell">${p.issue}</td>
         <td class="wrap-cell">${p.drill}</td>
         <td class="wrap-cell">${p.comp}</td>
-        <td>${link}</td>
+        <td>${link}${reviewRollup(p)}</td>
       `;
       tbody.appendChild(tr);
     });

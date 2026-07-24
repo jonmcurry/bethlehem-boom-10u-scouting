@@ -151,6 +151,11 @@
     white-space: nowrap;
   }
   .review-badge.ai-draft { border: 1px dashed var(--text-muted); color: var(--text-muted); }
+  .review-badge.drifted { border: 1px dashed var(--status-warning); color: #8a5a00; }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .review-badge.drifted { color: var(--status-warning); }
+  }
+  :root[data-theme="dark"] .review-badge.drifted { color: var(--status-warning); }
   .review-badge.confirmed { background: color-mix(in srgb, var(--status-good) 14%, transparent); color: var(--status-good); border: 1px solid transparent; }
 
   details { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
@@ -367,7 +372,7 @@
 
     <details open>
       <summary>Primary Issue(s) Identified</summary>
-      <div class="details-body">
+      <div class="details-body" id="issuesContainer">
         <p>No at-bats have been filmed yet for Madison W (#66). Once games are logged and frames are extracted, fill in the specific issues here.</p>
       </div>
     </details>
@@ -417,6 +422,11 @@
 </div>
 
 <script>
+  // Used to render the "no video yet" message inside the JS-driven sections below (e.g. Issues)
+  // consistently with the header. generate_roster_reports.ps1 substitutes this alongside the
+  // header's Madison W (#66).
+  const PLAYER_NAME = "Madison W (#66)";
+
   // Edit this array: one row per at-bat filmed. Add a row every game, in order — this is the
   // running log that the checklist notes below should trace back to.
   // "pitch" = location/type of the pitch she swung at (or took), e.g. "Outside, low",
@@ -480,6 +490,12 @@
   const reviewBadge = row => {
     if (isPending(row.score)) return "";
     if (!row.reviewedBy) {
+      // Edited-but-unconfirmed: score no longer matches the original AI read, and nobody has
+      // signed off on the change. Flag this distinctly rather than showing a plain "AI draft" -
+      // an unconfirmed drift is a different (riskier) state than an untouched AI draft.
+      if (row.aiDraft != null && row.aiDraft !== row.score) {
+        return `<br><span class="review-badge drifted" title="Score changed from the original AI draft (${row.aiDraft}) without a coach confirming — needs review">🤖 edited, unconfirmed</span>`;
+      }
       return `<br><span class="review-badge ai-draft" title="AI-drafted score, not yet reviewed by a coach">🤖 AI draft</span>`;
     }
     const diff = (row.aiDraft != null && row.aiDraft !== row.score)
@@ -514,6 +530,43 @@
     `;
     tbody.appendChild(tr);
   });
+
+  // Edit this array: one entry per issue identified from the pattern across logged at-bats.
+  // reviewedBy works the same way as the checklist's coach-validation fields: leave null while
+  // it's Claude's read of the frames (renders an "AI draft" badge); set to a coach's name once
+  // they've confirmed the diagnosis against what they actually saw live.
+  const ISSUES = [
+    // {
+    //   issue: "e.g. Steps in the bucket — front foot opens toward third base before the swing starts",
+    //   seenInAtBats: "e.g. AB 1 vs Eagles (8/2), AB 2 vs Hawks (8/9) — cite specific Game Log rows",
+    //   likelyCause: "e.g. fear of the ball / no weight transfer practice",
+    //   effect: "e.g. pulls off outside pitches, rolls over to weak grounders",
+    //   reviewedBy: null,
+    // },
+  ];
+
+  const issueReviewBadge = iss => iss.reviewedBy
+    ? `<div style="margin-top:8px;"><span class="review-badge confirmed" title="Confirmed by ${iss.reviewedBy}">✓ ${iss.reviewedBy}</span></div>`
+    : `<div style="margin-top:8px;"><span class="review-badge ai-draft" title="AI-drafted diagnosis, not yet reviewed by a coach">🤖 AI draft</span></div>`;
+
+  const issuesContainer = document.getElementById("issuesContainer");
+  if (ISSUES.length === 0) {
+    issuesContainer.innerHTML = `<p>No at-bats have been filmed yet for ${PLAYER_NAME}. Once games are logged and frames are extracted, fill in the specific issues here.</p>`;
+  } else {
+    issuesContainer.innerHTML = "";
+    ISSUES.forEach(iss => {
+      const div = document.createElement("div");
+      div.className = "issue-card";
+      div.innerHTML = `
+        <b>Issue:</b> ${iss.issue}<br>
+        <b>Seen in at-bats:</b> ${iss.seenInAtBats}<br>
+        <b>Likely cause:</b> ${iss.likelyCause}<br>
+        <b>Effect on outcomes:</b> ${iss.effect}
+        ${issueReviewBadge(iss)}
+      `;
+      issuesContainer.appendChild(div);
+    });
+  }
 
   const toggle = document.getElementById("themeToggle");
   toggle.addEventListener("click", () => {

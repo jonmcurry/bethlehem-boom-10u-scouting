@@ -41,6 +41,9 @@ foreach ($p in $Players) {
     )
 
     $html = $html.Replace("Swing Scouting Report — {{PLAYER_NAME}}", "Swing Scouting Report — $displayName")
+    # Catches the remaining bare {{PLAYER_NAME}} tokens: the static "no video" fallback
+    # paragraph and the JS `const PLAYER_NAME` used by the issues-rendering code.
+    $html = $html.Replace("{{PLAYER_NAME}}", $displayName)
 
     $html = $html.Replace(
 @'
@@ -59,19 +62,6 @@ foreach ($p in $Players) {
       <span><b>Vantage:</b> —</span>
     </div>
 "@
-    )
-
-    $html = $html.Replace(
-@'
-        <div class="issue-card">
-          <b>Issue:</b> {{e.g. "Steps in the bucket — front foot opens toward third base before the swing starts"}}<br>
-          <b>Seen in at-bats:</b> {{e.g. "AB 1 vs Eagles (8/2), AB 2 vs Hawks (8/9)" — cite specific rows from the Game Log above}}<br>
-          <b>Likely cause:</b> {{e.g. fear of the ball / no weight transfer practice}}<br>
-          <b>Effect on outcomes:</b> {{e.g. pulls off outside pitches, rolls over to weak grounders}}
-        </div>
-        <!-- copy this .issue-card block again for a 2nd/3rd issue if needed -->
-'@,
-        "        <p>No at-bats have been filmed yet for $displayName. Once games are logged and frames are extracted, fill in the specific issues here.</p>"
     )
 
     $html = $html.Replace(
